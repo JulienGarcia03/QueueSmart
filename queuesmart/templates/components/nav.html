@@ -13,7 +13,9 @@
             </a>
             <button type="button" class="flex text-sm bg-neutral-primary rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Open user menu</span>
-                <img class="w-8 h-8 rounded-full" src="https://100k-faces.vercel.app/api/random-image" alt="user photo">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-neutral-secondary-soft text-heading font-medium">
+                    {{ user.username|first|upper }}
+                </span>
             </button>
             <div class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
                 <div class="px-4 py-3 text-sm border-b border-default">

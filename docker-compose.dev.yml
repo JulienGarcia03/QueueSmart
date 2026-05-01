@@ -1,5 +1,11 @@
-
 services:
+  tailwind:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npx tailwindcss -i ./queuesmart/static/src/input.css -o ./queuesmart/static/src/output.css"
+
   web:
     build:
       context: .
@@ -12,5 +18,6 @@ services:
       - ./:/app
     ports:
       - "8000:8000"
+    depends_on:
+      - tailwind
     command: sh -c "python manage.py runserver 0.0.0.0:8000"
-

@@ -1,4 +1,28 @@
 {% extends "components/nav.html" %}
 {% block nav_links %}
-    
+    <li>
+        <a href="{% url 'portal' %}" class="block py-2 px-3 text-body hover:text-heading md:p-0">
+            Portal
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'operations' %}" class="block py-2 px-3 text-body hover:text-heading md:p-0">
+            Operations
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'create_service' %}" class="block py-2 px-3 text-body hover:text-heading md:p-0">
+            Services
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'service_details' %}" class="block py-2 px-3 text-body hover:text-heading md:p-0">
+            Queue Details
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'reports' %}" class="block py-2 px-3 text-body hover:text-heading md:p-0">
+            Reports
+        </a>
+    </li>
 {% endblock %}

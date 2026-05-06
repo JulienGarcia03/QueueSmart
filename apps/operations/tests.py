@@ -1,4 +1,4 @@
-import json
+import json 
 
 from django.test import Client, TestCase
 from django.contrib.auth.models import Group, User
@@ -263,4 +263,4 @@ class ReportingTests(TestCase):
         self.assertIn("Cordai", csv_content)
         self.assertIn("Academic Advising", csv_content)
         self.assertNotIn("Amara", csv_content)
-        self.assertNotIn("IT Help Desk", csv_content)
+        self.assertNotIn("IT Help Desk", csv_content) 

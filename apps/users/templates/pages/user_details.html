@@ -2,116 +2,84 @@
 {% block page_title %}User Details{% endblock %}
 
 {% block body %}
-    <div class="flex flex-col md:flex-row gap-4 p-4 max-w-full">
-        <div class="relative bg-neutral-primary-soft max-w-xs w-full p-6 border border-default rounded-base shadow-xs">
-                <button id="dropdownButton" data-dropdown-toggle="dropdown" class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft box-border border border-transparent hover:bg-neutral-tertiary focus:ring-4 focus:ring-neutral-tertiary rounded-base p-1.5 focus:outline-none" type="button">
-                    <span class="sr-only">Open dropdown</span>
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m5.99 0h.01"/></svg>
-                </button>
-                <div id="dropdown" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 block hidden">
-                    <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdownButton">
-                        <li>
-                            <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">Edit</a>
-                        </li>
-                        <li>
-                            <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">Export Data</a>
-                        </li>
-                        <li>
-                            <a href="#" class="inline-flex items-center w-full p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded-md">Delete</a>
-                        </li>
-                    </ul>
-                </div>
-            <div class="flex flex-col items-center">
-                <img class="w-24 h-24 mb-6 rounded-full" src="https://100k-faces.vercel.app/api/random-image" alt="Bonnie image"/>
-                <h5 class="mb-0.5 text-xl font-semibold tracking-tight text-heading">{{ user.first_name }} {{ user.last_name }}</h5>
-                <span class="text-sm text-body">Joined: {{ user.date_joined }} </span>
-            </div>
+<div class="w-full max-w-5xl mx-auto px-6 py-10">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <div class="rounded-2xl border bg-white p-6 shadow-sm">
+      <div class="flex flex-col items-center text-center">
+        <span class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-900 text-white text-3xl font-semibold">
+          {{ user.username|first|upper }}
+        </span>
+
+        <h1 class="mt-5 text-xl font-semibold text-slate-900">
+          {% if user.first_name or user.last_name %}
+            {{ user.first_name }} {{ user.last_name }}
+          {% else %}
+            {{ user.username }}
+          {% endif %}
+        </h1>
+
+        <p class="mt-1 text-sm text-slate-600">{{ user.email }}</p>
+        <p class="mt-1 text-xs text-slate-500">Joined: {{ user.date_joined }}</p>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-3">
+        <a href="{% url 'dashboard' %}"
+           class="rounded-lg border px-4 py-2 text-sm font-medium text-center hover:bg-slate-50">
+          Dashboard
+        </a>
+
+        <a href="{% url 'queue_status' %}"
+           class="rounded-lg border px-4 py-2 text-sm font-medium text-center hover:bg-slate-50">
+          Queue Status
+        </a>
+
+        <a href="{% url 'history' %}"
+           class="rounded-lg border px-4 py-2 text-sm font-medium text-center hover:bg-slate-50">
+          Queue History
+        </a>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2 rounded-2xl border bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-slate-900">Account Information</h2>
+
+      <div class="mt-6 space-y-4 text-sm">
+        <div class="flex justify-between gap-4 border-b pb-3">
+          <span class="text-slate-500">Username</span>
+          <span class="font-medium text-slate-900">{{ user.username }}</span>
         </div>
 
-        <div class="relative overflow-x-scroll bg-neutral-primary-soft shadow-xs rounded-base border border-default">
-            <div class="p-5 text-lg font-semibold">Service Ticket History</div>
-            <table class="w-full text-sm text-left rtl:text-right text-body">
-                <thead class="text-sm text-body bg-neutral-secondary-medium border-b border-default-medium">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 font-medium">
-                            <div class="flex items-center">
-                                Opened At
-                                <a href="#">
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/></svg>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3 font-medium">
-                            <div class="flex items-center">
-                                Closed At
-                                <a href="#">
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/></svg>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3 font-medium">
-                            <div class="flex items-center">
-                                Service
-                                <a href="#">
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/></svg>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3 font-medium">
-                            <div class="flex items-center">
-                                Status
-                                <a href="#">
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/></svg>
-                                </a>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="bg-neutral-primary-soft border-b border-default">
-                        <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                            Feb 16, 2025 16:20:53
-                        </th>
-                        <td class="px-6 py-4">
-                            Feb 16, 2025 16:54:42
-                        </td>
-                        <td class="px-6 py-4">
-                            Checkup
-                        </td>
-                        <td class="px-6 py-4">
-                            Closed
-                        </td>
-                    </tr>
-                    <tr class="bg-neutral-primary-soft border-b border-default">
-                        <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                            Feb 12, 2025 16:20:53
-                        </th>
-                        <td class="px-6 py-4">
-                            Feb 12, 2025 16:54:42
-                        </td>
-                        <td class="px-6 py-4">
-                            Eye Exam
-                        </td>
-                        <td class="px-6 py-4">
-                            Closed
-                        </td>
-                    </tr>
-                    <tr class="bg-neutral-primary-soft border-b border-default">
-                        <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                            Feb 10, 2025 16:20:53
-                        </th>
-                        <td class="px-6 py-4">
-                            Feb 10, 2025 16:54:42
-                        </td>
-                        <td class="px-6 py-4">
-                            Checkup
-                        </td>
-                        <td class="px-6 py-4">
-                            Cancelled
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="flex justify-between gap-4 border-b pb-3">
+          <span class="text-slate-500">Email</span>
+          <span class="font-medium text-slate-900">{{ user.email|default:"Not provided" }}</span>
         </div>
+
+        <div class="flex justify-between gap-4 border-b pb-3">
+          <span class="text-slate-500">First Name</span>
+          <span class="font-medium text-slate-900">{{ user.first_name|default:"Not provided" }}</span>
+        </div>
+
+        <div class="flex justify-between gap-4 border-b pb-3">
+          <span class="text-slate-500">Last Name</span>
+          <span class="font-medium text-slate-900">{{ user.last_name|default:"Not provided" }}</span>
+        </div>
+
+        <div class="flex justify-between gap-4 border-b pb-3">
+          <span class="text-slate-500">Staff Access</span>
+          <span class="font-medium text-slate-900">
+            {% if user.is_staff %}Yes{% else %}No{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-xl border bg-slate-50 p-4">
+        <p class="text-sm text-slate-600">
+          Queue history is shown on the History page and is based on real queue records stored in the database.
+        </p>
+      </div>
     </div>
+
+  </div>
+</div>
 {% endblock %}

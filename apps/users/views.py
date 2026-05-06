@@ -1,5 +1,7 @@
 import json
+from django import forms
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -53,15 +55,35 @@ class LoginView(FormView):
         login(self.request, form.get_user())
         return super().form_valid(form)
 
-
+class QueueSmartRegistrationForm(UserCreationForm):
+    name = forms.CharField(max_length=100, required=True)
+    email = forms.EmailField(required=True)
+    class Meta:
+        model = User
+        fields = ("name", "email", "password1", "password2")
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        if User.objects.filter(username=email).exists():
+            raise forms.ValidationError("An account with this email already exists.")
+        return email
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        full_name = self.cleaned_data["name"].strip()
+        email = self.cleaned_data["email"].strip().lower()
+        user.username = email
+        user.email = email
+        name_parts = full_name.split(" ", 1)
+        user.first_name = name_parts[0]
+        if len(name_parts) > 1:
+            user.last_name = name_parts[1]
+        if commit:
+            user.save()
+        return user
 class RegisterView(SuccessMessageMixin, CreateView):
-    """Register page view."""
-    form_class = UserCreationForm
+    form_class = QueueSmartRegistrationForm
     success_url = reverse_lazy("login")
     template_name = "pages/register.html"
     success_message = "Your account was created successfully!"
-
-
 class NotificationsView(TemplateView):
     """Notifications page view."""
     template_name = "pages/notifications.html"

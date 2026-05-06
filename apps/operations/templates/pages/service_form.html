@@ -76,9 +76,9 @@
             <select name="priority" required
                     class="mt-2 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-300">
               <option value="" {% if not form_data.priority %}selected{% endif %} disabled>Select one</option>
-              <option value="low" {% if form_data.priority == 'low' %}selected{% endif %}>Low</option>
-              <option value="medium" {% if form_data.priority == 'medium' %}selected{% endif %}>Medium</option>
-              <option value="high" {% if form_data.priority == 'high' %}selected{% endif %}>High</option>
+              <option value="1" {% if form_data.priority == '1' %}selected{% endif %}>Low</option>
+              <option value="2" {% if form_data.priority == '2' %}selected{% endif %}>Medium</option>
+              <option value="3" {% if form_data.priority == '3' %}selected{% endif %}>High</option>
             </select>
             {% if errors.priority %}
               <p class="mt-2 text-sm text-red-600">{{ errors.priority }}</p>

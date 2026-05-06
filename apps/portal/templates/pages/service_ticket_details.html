@@ -1,45 +1,96 @@
 {% extends 'components/portal_root.html' %}
-{% block page_title %}Service Ticket Details{% endblock %}
+{% block page_title %}Queue Details{% endblock %}
+
 {% block body %}
-    <div class="flex flex-col md:flex-row p-4 gap-4 max-w-full">
-        <div class="relative bg-neutral-primary-soft max-w-xs w-full border border-default rounded-base shadow-xs">
-            <h5 class="p-4 text-2xl font-semibold tracking-tight text-heading leading-8 border-b border-neutral-300">Service Ticket Details</h5>
-            <div class="flex gap-4 w-full px-4">
-                <dl class="max-w-md text-heading divide-y divide-default">
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Date Opened</dt>
-                        <dd class="text-lg font-medium text-right">Feb 12, 2025 16:20:00</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Date Closed</dt>
-                        <dd class="text-lg font-medium text-right">---</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Service</dt>
-                        <dd class="text-lg font-medium text-right">Deep Cleaning</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Customer</dt>
-                        <dd class="text-lg font-medium text-right">Alex Bradshaw</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Status</dt>
-                        <dd class="text-lg font-medium text-right">Pending</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Current Queue Position</dt>
-                        <dd class="text-lg font-medium text-right">2</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Estimated Wait Time</dt>
-                        <dd class="text-lg font-medium text-right">12 Minutes</dd>
-                    </div>
-                    <div class="flex flex-row gap-4 justify-between py-3">
-                        <dt class="mb-1 text-body">Service Provider</dt>
-                        <dd class="text-lg font-medium text-right">---</dd>
-                    </div>
-                </dl>
-            </div>
-        </div>
+<div class="w-full max-w-4xl mx-auto px-6 py-10">
+  <div class="rounded-2xl border bg-white p-6 shadow-sm">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-2xl font-semibold text-slate-900">Queue Details</h1>
+        <p class="mt-1 text-sm text-slate-600">
+          View your current queue information and estimated wait time.
+        </p>
+      </div>
+
+      <a href="{% url 'join_queue' %}"
+         class="rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800">
+        Join Another Queue
+      </a>
     </div>
+
+    {% if current_entry %}
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="rounded-xl border p-4">
+          <p class="text-sm text-slate-500">Service</p>
+          <p class="mt-1 text-lg font-semibold">
+            {{ current_entry.queue.service.name }}
+          </p>
+        </div>
+
+        <div class="rounded-xl border p-4">
+          <p class="text-sm text-slate-500">Queue Position</p>
+          <p class="mt-1 text-lg font-semibold">
+            #{{ current_entry.position }}
+          </p>
+        </div>
+
+        <div class="rounded-xl border p-4">
+          <p class="text-sm text-slate-500">Status</p>
+          <p class="mt-1 text-lg font-semibold">
+            {{ current_entry.get_status_display }}
+          </p>
+        </div>
+
+        <div class="rounded-xl border p-4">
+          <p class="text-sm text-slate-500">Estimated Wait Time</p>
+          <p class="mt-1 text-lg font-semibold">
+            {{ estimated_wait }} min
+          </p>
+        </div>
+
+        <div class="rounded-xl border p-4">
+          <p class="text-sm text-slate-500">Joined Queue</p>
+          <p class="mt-1 text-sm font-medium">
+            {{ current_entry.joined_at }}
+          </p>
+        </div>
+
+        <div class="rounded-xl border p-4">
+          <p class="text-sm text-slate-500">Expected Duration</p>
+          <p class="mt-1 text-lg font-semibold">
+            {{ current_entry.queue.service.expected_duration }} min
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="{% url 'queue_status' %}"
+           class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+          View Queue Status
+        </a>
+
+        <a href="{% url 'history' %}"
+           class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+          Queue History
+        </a>
+
+        <a href="{% url 'portal' %}"
+           class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+          Back to Portal
+        </a>
+      </div>
+    {% else %}
+      <div class="mt-8 rounded-xl border border-dashed p-8 text-center">
+        <p class="text-slate-600">
+          You are not currently waiting in any queue.
+        </p>
+
+        <a href="{% url 'join_queue' %}"
+           class="mt-4 inline-flex rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800">
+          Join Queue
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

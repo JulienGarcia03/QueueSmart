@@ -1,16 +1,38 @@
-from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from apps.operations.models import QueueEntry, Service
+from apps.users.models import Notification
+class PortalView(LoginRequiredMixin, TemplateView):
+    """Customer portal dashboard view."""
+    login_url = "login"
+    template_name = "pages/portal_dashboard.html"
 
-# Example view with login required:
-# class PortalView(LoginRequiredMixin, TemplateView):
-#     """Portal default view; redirects to login if not authenticated."""
-#     login_url = 'login'
-#     template_name = 'pages/portal_dashboard.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-class PortalView(TemplateView):
-    """Portal default view; redirects to login if not authenticated."""
-    template_name = 'pages/portal_dashboard.html'
+        names = {self.request.user.username}
+        full_name = self.request.user.get_full_name().strip()
+        if full_name:
+            names.add(full_name)
 
+        current_entry = QueueEntry.objects.filter(
+            user_name__in=names,
+            status=QueueEntry.Status.WAITING,
+        ).select_related("queue__service").order_by("joined_at", "id").first()
+
+        notifications = Notification.objects.filter(
+            recipient_name__in=names,
+        ).order_by("-created_at", "-id")
+
+        context["current_entry"] = current_entry
+        context["estimated_wait"] = (
+            (current_entry.position - 1) * current_entry.queue.service.expected_duration
+            if current_entry
+            else None
+        )
+        context["active_services"] = Service.objects.all()
+        context["recent_notifications"] = notifications[:3]
+        return context
 
 class ServiceTicketFormView(TemplateView):
     """Service Ticket Form view."""

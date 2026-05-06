@@ -1,10 +1,104 @@
 {% extends 'components/portal_root.html' %}
 {% block page_title %}Portal Dashboard{% endblock %}
+
 {% block body %}
-    <h1>This is the customer portal dashboard page.</h1>
-    <p>My current fulfillment... (Can complete fulfillment with 'complete fulfillment' button. Shows modal/dialog confirm then completed fulfillment.)</p>
-    <p>Current Queue Status Overview...</p>
-    <p>Service next customer button...</p>
-    <p>Active Services Table...</p>
-    <p>Notifications Summary...</p>
+<div class="w-full max-w-6xl mx-auto px-6 py-10">
+  <div class="flex items-start justify-between gap-6 flex-wrap">
+    <div>
+      <h1 class="text-3xl font-semibold text-slate-900">Customer Portal</h1>
+      <p class="mt-1 text-sm text-slate-600">View your queue status, join a service, and check recent updates.</p>
+    </div>
+
+    <a href="{% url 'join_queue' %}"
+       class="rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800">
+      Join Queue
+    </a>
+  </div>
+
+  <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 rounded-2xl border bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-slate-900">Current Queue Status</h2>
+
+      {% if current_entry %}
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="rounded-xl border p-4">
+            <p class="text-sm text-slate-500">Service</p>
+            <p class="mt-1 text-xl font-semibold">{{ current_entry.queue.service.name }}</p>
+          </div>
+
+          <div class="rounded-xl border p-4">
+            <p class="text-sm text-slate-500">Position</p>
+            <p class="mt-1 text-xl font-semibold">#{{ current_entry.position }}</p>
+          </div>
+
+          <div class="rounded-xl border p-4">
+            <p class="text-sm text-slate-500">Estimated Wait</p>
+            <p class="mt-1 text-xl font-semibold">{{ estimated_wait }} min</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="{% url 'queue_status' %}"
+             class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+            View Full Status
+          </a>
+
+          <a href="{% url 'history' %}"
+             class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+            View History
+          </a>
+        </div>
+      {% else %}
+        <div class="mt-6 rounded-xl border border-dashed p-8 text-center">
+          <p class="text-slate-600">You are not currently waiting in a queue.</p>
+          <a href="{% url 'join_queue' %}"
+             class="mt-4 inline-flex rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800">
+            Join a Queue
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="rounded-2xl border bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-slate-900">Recent Notifications</h2>
+
+      <div class="mt-4 space-y-3">
+        {% for notification in recent_notifications %}
+          <div class="rounded-xl border bg-slate-50 p-3">
+            <p class="text-sm font-medium text-slate-900">{{ notification.title }}</p>
+            <p class="mt-1 text-sm text-slate-600">{{ notification.message }}</p>
+          </div>
+        {% empty %}
+          <div class="rounded-xl border border-dashed p-4 text-sm text-slate-500">
+            No notifications yet.
+          </div>
+        {% endfor %}
+      </div>
+
+      <a href="{% url 'notifications' %}"
+         class="mt-4 inline-flex rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+        View Notifications
+      </a>
+    </div>
+  </div>
+
+  <div class="mt-8 rounded-2xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-semibold text-slate-900">Available Services</h2>
+    <p class="mt-1 text-sm text-slate-600">Choose a service from the Join Queue page to enter the line.</p>
+
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for service in active_services %}
+        <div class="rounded-xl border p-4">
+          <h3 class="font-semibold text-slate-900">{{ service.name }}</h3>
+          <p class="mt-1 text-sm text-slate-600">{{ service.description }}</p>
+          <p class="mt-3 text-xs text-slate-500">Expected duration: {{ service.expected_duration }} min</p>
+        </div>
+      {% empty %}
+        <div class="rounded-xl border border-dashed p-4 text-sm text-slate-500">
+          No services are available yet.
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 {% endblock %}

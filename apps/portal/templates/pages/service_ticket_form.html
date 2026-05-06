@@ -1,19 +1,31 @@
 {% extends 'components/portal_root.html' %}
-{% block page_title %}Service Ticket Form{% endblock %}
+{% block page_title %}Join Service Queue{% endblock %}
+
 {% block body %}
-    <h1>This is the service ticket form page page.</h1>
-    <p>This is where customers create new service tickets and edit existing ones. Need to detect if creating or editing and update button text accordingly.</p>    
-    <form method="post">
-        {% csrf_token %}
-        {% comment %} {{ form.as_p }} This is what we'll use when we actually create the form backend{% endcomment %}
-        <label for="service-select">Service:</label>
-        <select name="service-select" id="service-select">
-            <option value="1">Some service</option>
-            <option value="2">Some other service</option>        
-            <option value="3">You get it...</option>        
-        </select>
-        <a href="{% url 'cancel_service_ticket' %}">CANCEL SERVICE TICKET</a>
-        <button>Back</button>
-        <button type="submit">Create Service Ticket/Save Changes</button>
-    </form>  
+<div class="w-full max-w-3xl mx-auto px-6 py-10">
+  <div class="rounded-2xl border bg-white p-6 shadow-sm">
+    <h1 class="text-2xl font-semibold text-slate-900">Service Queue</h1>
+    <p class="mt-2 text-sm text-slate-600">
+      QueueSmart now uses live queue entries instead of separate service tickets.
+      Select a service from the Join Queue page to enter the line.
+    </p>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="{% url 'join_queue' %}"
+         class="rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800">
+        Join Queue
+      </a>
+
+      <a href="{% url 'queue_status' %}"
+         class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+        View Queue Status
+      </a>
+
+      <a href="{% url 'portal' %}"
+         class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+        Back to Portal
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

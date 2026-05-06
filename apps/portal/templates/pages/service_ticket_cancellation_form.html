@@ -1,15 +1,38 @@
 {% extends 'components/portal_root.html' %}
-{% block page_title %}Service Ticket Cancellation Form{% endblock %}
+{% block page_title %}Leave Queue{% endblock %}
+
 {% block body %}
-    <h1>This is the service ticket cancellation form page page.</h1>
-    <p>This is where customers create new service tickets cancellation. Cancellations can't be edited.</p>
-    <form method="post">
-        {% csrf_token %}
-        {% comment %} {{ form.as_p }} This is what we'll use when we actually create the form backend{% endcomment %}
-        <p>Are you sure you want to cancel [THIS TICKET]?</p>
-        <label for="reason-for-cancellation">Reason for Cancellation:</label>
-        <textarea name="reason-for-cancellation" id="reason-for-cancellation" placeholder="Please enter a reason for cancelling your ticket."></textarea>
-        <button>Back</button>
-        <button type="submit">Cancel Ticket</button>
-    </form>  
+<div class="w-full max-w-3xl mx-auto px-6 py-10">
+  <div class="rounded-2xl border bg-white p-6 shadow-sm">
+    <h1 class="text-2xl font-semibold text-slate-900">Leave Queue</h1>
+
+    <p class="mt-2 text-sm text-slate-600">
+      QueueSmart now uses live queue entries instead of separate service tickets.
+      To leave or check your current queue, use the queue status page.
+    </p>
+
+    <div class="mt-6 rounded-xl bg-slate-50 border p-4">
+      <p class="text-sm text-slate-600">
+        If you are currently waiting in a queue, your active queue information will appear on the Queue Status page.
+      </p>
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="{% url 'queue_status' %}"
+         class="rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800">
+        View Queue Status
+      </a>
+
+      <a href="{% url 'join_queue' %}"
+         class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+        Join Queue
+      </a>
+
+      <a href="{% url 'portal' %}"
+         class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-50">
+        Back to Portal
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

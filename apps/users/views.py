@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,7 +6,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, TemplateView
-
+from django.contrib import messages
+from django.http import JsonResponse
+from django.views import View
 from apps.operations.models import QueueEntry, Service
 
 from .models import Notification
@@ -116,11 +119,45 @@ class DashboardView(TemplateView):
         context["recent_notifications"] = notifications[:2]
         return context
 
-
-class JoinQueueView(TemplateView):
+class JoinQueueView(LoginRequiredMixin, TemplateView):
     template_name = "pages/join_queue.html"
+    login_url = "login"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["services"] = Service.objects.all()
+        return context
 
-
+    def post(self, request, *args, **kwargs):
+        service_id = request.POST.get("service_id")
+        service = Service.objects.filter(id=service_id).first()
+        if not service:
+            messages.error(request, "Please select a valid service.")
+            return redirect("join_queue")
+        user_name = request.user.username
+        queue = service.queue_set.filter(status="open").order_by("-created_at", "-id").first()
+        if queue is None:
+            from apps.operations.models import Queue
+            queue = Queue.objects.create(service=service, status="open")
+        already_waiting = QueueEntry.objects.filter(
+            queue=queue,
+            user_name=user_name,
+            status=QueueEntry.Status.WAITING,
+        ).exists()
+        if already_waiting:
+            messages.error(request, "You are already waiting in this queue.")
+            return redirect("queue_status")
+        position = QueueEntry.objects.filter(
+            queue=queue,
+            status=QueueEntry.Status.WAITING,
+        ).count() + 1
+        QueueEntry.objects.create(
+            queue=queue,
+            user_name=user_name,
+            position=position,
+        )
+        messages.success(request, f"You joined the {service.name} queue.")
+        return redirect("queue_status")
+    
 class QueueStatusView(TemplateView):
     template_name = "pages/queue_status.html"
 

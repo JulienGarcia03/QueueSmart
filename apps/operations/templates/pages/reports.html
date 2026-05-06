@@ -9,9 +9,9 @@
 
         <form method="get" class="flex flex-col md:flex-row gap-3 mb-4">
             <select name="service_id" class="border border-default rounded-base px-3 py-2 text-sm">
-                <option value="">All Services</option>
+                <option value="" {% if not selected_service %}selected{% endif %}>All Services</option>
                 {% for service in services %}
-                <option value="{{ service.id }}">
+                <option value="{{ service.id }}" {% if selected_service and selected_service.id == service.id %}selected{% endif %}>
                     {{ service.name }}
                 </option>
                 {% endfor %}

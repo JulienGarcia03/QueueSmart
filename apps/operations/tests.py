@@ -216,6 +216,18 @@ class ReportingTests(TestCase):
         self.assertContains(response, "Cordai")
         self.assertContains(response, "Academic Advising")
 
+    def test_reports_page_keeps_selected_service_filter(self):
+        self.client.login(username="staffuser", password="testpass123")
+
+        response = self.client.get(f"/operations/reports?service_id={self.service.id}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            f'<option value="{self.service.id}" selected>',
+            html=False,
+        )
+
     def test_customer_cannot_view_reports_page(self):
         self.client.login(username="customeruser", password="testpass123")
 
